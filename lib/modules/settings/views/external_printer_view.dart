@@ -142,30 +142,29 @@ class ExternalPrinterView extends StatelessWidget {
     });
   }
 
-  /// 三列布局（扫描、信息、测试）
+  /// 三列布局（扫描、信息、测试）- 紧凑版
   Widget _buildThreeColumnLayout(
     ExternalPrinterDevice device,
     ExternalPrinterService service,
   ) {
-    return Column(
-      children: [
-        // 第1块：扫描USB设备按钮
-        _buildScanButton(service),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // 第1块：扫描USB设备按钮
+          _buildScanButton(service),
 
-        SizedBox(height: 40.h),
+          SizedBox(height: 24.h), // 压缩间距
 
-        // 第2块：打印机基础信息（扩展以占据剩余空间）
-        Expanded(
-          child: Center(
-            child: _buildPrinterInfo(device),
-          ),
-        ),
+          // 第2块：打印机基础信息（固定高度，避免Expanded导致的空白）
+          _buildPrinterInfo(device),
 
-        SizedBox(height: 40.h),
+          SizedBox(height: 24.h), // 压缩间距
 
-        // 第3块：测试打印按钮和测试通过状态
-        _buildTestSection(device, service),
-      ],
+          // 第3块：测试打印按钮和状态显示区域（固定高度）
+          _buildTestSection(device, service),
+        ],
+      ),
     );
   }
 
@@ -207,7 +206,7 @@ class ExternalPrinterView extends StatelessWidget {
   Widget _buildPrinterInfo(ExternalPrinterDevice device) {
     return Container(
       constraints: BoxConstraints(maxWidth: 500.w),
-      padding: EdgeInsets.all(24.w),
+      padding: EdgeInsets.all(16.w), // 压缩内边距
       decoration: BoxDecoration(
         color: const Color(0xFFF3E5F5),
         borderRadius: BorderRadius.circular(12.r),
@@ -259,14 +258,14 @@ class ExternalPrinterView extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: 16.h), // 压缩标题和信息之间的间距
 
           // 设备信息
           _buildInfoRow('厂商', device.manufacturer),
-          SizedBox(height: 12.h),
+          SizedBox(height: 8.h), // 压缩信息行间距
           _buildInfoRow('USB ID', device.usbIdentifier),
           if (device.serialNumber != null) ...[
-            SizedBox(height: 12.h),
+            SizedBox(height: 8.h), // 压缩信息行间距
             _buildInfoRow('序列号', device.serialNumber!),
           ],
         ],
@@ -306,7 +305,7 @@ class ExternalPrinterView extends StatelessWidget {
     );
   }
 
-  /// 测试区域（按钮 + 测试通过状态）
+  /// 测试区域（按钮 + 状态显示区域）- 固定高度避免位移
   Widget _buildTestSection(
     ExternalPrinterDevice device,
     ExternalPrinterService service,
@@ -316,6 +315,7 @@ class ExternalPrinterView extends StatelessWidget {
       final testPassed = service.testPrintSuccess.value;
 
       return Column(
+        mainAxisSize: MainAxisSize.min, // 使用最小尺寸
         children: [
           // 测试打印按钮
           SizedBox(
@@ -350,37 +350,41 @@ class ExternalPrinterView extends StatelessWidget {
             ),
           ),
 
-          // 测试通过状态（测试成功后显示）
-          if (testPassed) ...[
-            SizedBox(height: 20.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 24.w,
-                  height: 24.h,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF4CAF50),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.check,
-                    size: 16.sp,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(width: 10.w),
-                Text(
-                  '测试通过',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF4CAF50),
-                  ),
-                ),
-              ],
-            ),
-          ],
+          // 状态显示区域（固定高度60.h，避免出现时导致位移）
+          SizedBox(
+            height: 60.h, // 固定高度
+            child: testPassed
+                ? Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 24.w,
+                          height: 24.h,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF4CAF50),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.check,
+                            size: 16.sp,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(width: 10.w),
+                        Text(
+                          '测试通过',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF4CAF50),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : const SizedBox.shrink(), // 未测试时显示空白但保持高度
+          ),
         ],
       );
     });

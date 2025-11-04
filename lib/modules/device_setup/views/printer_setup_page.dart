@@ -49,12 +49,7 @@ class PrinterSetupPage extends GetView<DeviceSetupController> {
         // 第2列：内置打印机（80%宽度，居中显示）
         Expanded(
           flex: 80,
-          child: Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 600.w),
-              child: _buildBuiltInPrinterPanel(),
-            ),
-          ),
+          child: _buildBuiltInPrinterPanel(), // 打印机信息面板居中
         ),
       ],
     );
@@ -65,26 +60,32 @@ class PrinterSetupPage extends GetView<DeviceSetupController> {
     return const PrinterInstructionsPanel();
   }
 
-  /// 第2列：内置打印机面板（无边框，居中布局）
+  /// 第2列：内置打印机面板（状态信息和按钮居中）
   Widget _buildBuiltInPrinterPanel() {
     final printerService = Get.find<SunmiPrinterService>();
     final checkStatus = controller.printerCheckStatus.value;
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        // 打印机状态显示
-        PrinterStatusDisplay(
-          statusInfo: printerService.printerStatus.value,
-          isChecking: checkStatus == 'checking',
-        ),
-        
-        SizedBox(height: 24.h),
-        
-        // 操作按钮
-        const PrinterActionButtons(),
-      ],
+    return Center( // 整体居中
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center, // 垂直居中
+        crossAxisAlignment: CrossAxisAlignment.center, // 水平居中
+        children: [
+          // 打印机状态显示（居中）
+          Center(
+            child: PrinterStatusDisplay(
+              statusInfo: printerService.printerStatus.value,
+              isChecking: checkStatus == 'checking',
+            ),
+          ),
+          
+          SizedBox(height: 24.h),
+          
+          // 操作按钮（居中）
+          const Center(
+            child: PrinterActionButtons(),
+          ),
+        ],
+      ),
     );
   }
 
