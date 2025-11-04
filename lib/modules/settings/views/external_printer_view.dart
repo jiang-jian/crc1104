@@ -233,7 +233,7 @@ class ExternalPrinterView extends StatelessWidget {
                 child: Text(
                   device.displayName,
                   style: TextStyle(
-                    fontSize: 20.sp,
+                    fontSize: 22.sp, // 增大打印机名称字号
                     fontWeight: FontWeight.bold,
                     color: const Color(0xFF333333),
                   ),
@@ -244,13 +244,13 @@ class ExternalPrinterView extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF9C27B0),
+                  color: const Color(0xFF4CAF50), // 绿色高亮
                   borderRadius: BorderRadius.circular(6.r),
                 ),
                 child: Text(
                   '已连接',
                   style: TextStyle(
-                    fontSize: 13.sp,
+                    fontSize: 14.sp, // 增大字号
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
@@ -284,7 +284,7 @@ class ExternalPrinterView extends StatelessWidget {
           child: Text(
             '$label：',
             style: TextStyle(
-              fontSize: 15.sp,
+              fontSize: 16.sp, // 增大标签字号
               color: const Color(0xFF999999),
               fontWeight: FontWeight.w500,
             ),
@@ -294,7 +294,7 @@ class ExternalPrinterView extends StatelessWidget {
           child: Text(
             value,
             style: TextStyle(
-              fontSize: 15.sp,
+              fontSize: 16.sp, // 增大值字号
               color: const Color(0xFF666666),
               fontWeight: FontWeight.w600,
             ),
