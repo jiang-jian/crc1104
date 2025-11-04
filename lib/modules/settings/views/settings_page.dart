@@ -9,7 +9,6 @@ import 'placeholder_view.dart';
 import 'external_card_reader_view.dart';
 import 'external_printer_view.dart';
 import 'qr_scanner_config_view.dart';
-import 'network_detection_view.dart';
 import 'card_registration_view.dart';
 import 'game_card_management_view.dart';
 
@@ -52,6 +51,7 @@ class SettingsPage extends GetView<SettingsController> {
       ('card_registration', '卡片登记', Icons.card_membership),
       ('game_card_management', '游戏卡管理', Icons.games),
       ('change_password', '修改登录密码', Icons.lock),
+      ('version_check', '版本检查', Icons.info),
     ];
 
     return Container(
@@ -121,16 +121,13 @@ class SettingsPage extends GetView<SettingsController> {
         content = const ExternalPrinterView();
         break;
       case 'network_detection':
-        content = const NetworkDetectionView();
+        content = const NetworkCheckWidget();
         break;
       case 'card_registration':
         content = const CardRegistrationView();
         break;
       case 'game_card_management':
         content = const GameCardManagementView();
-        break;
-      case 'network_check':
-        content = const NetworkCheckWidget();
         break;
       case 'version_check':
         content = const VersionCheckView();
