@@ -2,7 +2,7 @@
 /// 用于USB外接读卡器的数据表示
 class ExternalCardReaderDevice {
   final String deviceId;        // 设备ID
-  final String deviceName;      // 设备名称
+  final String deviceName;      // 设备名称（友好名称）
   final String manufacturer;    // 制造商
   final String productName;     // 产品名称
   final String? model;          // 型号
@@ -11,6 +11,7 @@ class ExternalCardReaderDevice {
   final int productId;         // USB产品ID
   final bool isConnected;      // 是否已连接
   final String? serialNumber;  // 序列号
+  final String? usbPath;       // USB路径（用于调试）
 
   ExternalCardReaderDevice({
     required this.deviceId,
@@ -23,6 +24,7 @@ class ExternalCardReaderDevice {
     required this.productId,
     required this.isConnected,
     this.serialNumber,
+    this.usbPath,
   });
 
   factory ExternalCardReaderDevice.fromMap(Map<String, dynamic> map) {
@@ -37,6 +39,7 @@ class ExternalCardReaderDevice {
       productId: map['productId'] as int? ?? 0,
       isConnected: map['isConnected'] as bool? ?? false,
       serialNumber: map['serialNumber'] as String?,
+      usbPath: map['usbPath'] as String?,
     );
   }
 
@@ -52,6 +55,7 @@ class ExternalCardReaderDevice {
       'productId': productId,
       'isConnected': isConnected,
       'serialNumber': serialNumber,
+      'usbPath': usbPath,
     };
   }
 

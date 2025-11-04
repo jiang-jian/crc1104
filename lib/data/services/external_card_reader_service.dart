@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -5,6 +6,7 @@ import '../models/external_card_reader_model.dart';
 
 /// 外接USB读卡器服务
 /// 专门用于管理通过USB接入的外接读卡器设备
+/// 支持自动读卡：当设备连接后自动监听卡片
 class ExternalCardReaderService extends GetxService {
   static const MethodChannel _channel =
       MethodChannel('com.holox.ailand_pos/external_card_reader');
@@ -32,6 +34,9 @@ class ExternalCardReaderService extends GetxService {
 
   // 调试日志
   final debugLogs = <String>[].obs;
+
+  // 自动读卡定时器
+  Timer? _autoReadTimer;
 
   /// 初始化服务
   Future<ExternalCardReaderService> init() async {
@@ -116,6 +121,7 @@ class ExternalCardReaderService extends GetxService {
           selectedReader.value = detectedReaders.first;
           readerStatus.value = ExternalCardReaderStatus.connected;
           _addLog('✓ 模拟设备已就绪');
+          _startAutoRead(); // 启动自动读卡
         }
         
         isScanning.value = false;
@@ -131,6 +137,7 @@ class ExternalCardReaderService extends GetxService {
         detectedReaders.clear();
         selectedReader.value = null;
         readerStatus.value = ExternalCardReaderStatus.notConnected;
+        _stopAutoRead(); // 停止自动读卡
       } else {
         // 解析设备列表
         final readers = result
@@ -145,6 +152,9 @@ class ExternalCardReaderService extends GetxService {
           selectedReader.value = readers.first;
           readerStatus.value = ExternalCardReaderStatus.connected;
           _addLog('✓ 已选择设备: ${readers.first.displayName}');
+          _startAutoRead(); // 启动自动读卡
+        } else {
+          _stopAutoRead(); // 停止自动读卡
         }
       }
     } catch (e, stackTrace) {
@@ -283,8 +293,81 @@ class ExternalCardReaderService extends GetxService {
     _addLog('日志已清空');
   }
 
+  /// 启动自动读卡（当设备连接时）
+  void _startAutoRead() {
+    if (_autoReadTimer != null && _autoReadTimer!.isActive) {
+      return; // 已经在运行
+    }
+
+    _addLog('启动自动读卡监听');
+    _autoReadTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
+      // 只有在设备连接且不在读卡中时才尝试读卡
+      if (selectedReader.value != null &&
+          readerStatus.value == ExternalCardReaderStatus.connected &&
+          !isReading.value) {
+        await _silentReadCard();
+      }
+    });
+  }
+
+  /// 停止自动读卡
+  void _stopAutoRead() {
+    if (_autoReadTimer != null) {
+      _autoReadTimer!.cancel();
+      _autoReadTimer = null;
+      _addLog('停止自动读卡监听');
+    }
+  }
+
+  /// 静默读卡（不显示错误提示）
+  Future<void> _silentReadCard() async {
+    if (selectedReader.value == null || isReading.value) {
+      return;
+    }
+
+    isReading.value = true;
+
+    try {
+      if (kIsWeb) {
+        // Web平台模拟
+        await Future.delayed(const Duration(milliseconds: 100));
+        isReading.value = false;
+        return;
+      }
+
+      final device = selectedReader.value!;
+
+      // 调用原生方法读卡
+      final result = await _channel.invokeMethod<Map<dynamic, dynamic>>(
+        'readCard',
+        {'deviceId': device.deviceId},
+      );
+
+      if (result != null) {
+        final cardResult = CardReadResult.fromMap(Map<String, dynamic>.from(result));
+
+        if (cardResult.success && cardResult.cardData != null) {
+          // 只有在卡片数据变化时才更新
+          final newUid = cardResult.cardData!['uid'];
+          final currentUid = cardData.value?['uid'];
+          
+          if (newUid != currentUid) {
+            cardData.value = cardResult.cardData;
+            testReadSuccess.value = true;
+            _addLog('✓ 检测到新卡片: $newUid');
+          }
+        }
+      }
+    } catch (e) {
+      // 静默失败，不打印日志（避免日志刷屏）
+    } finally {
+      isReading.value = false;
+    }
+  }
+
   @override
   void onClose() {
+    _stopAutoRead();
     _addLog('服务关闭');
     super.onClose();
   }
