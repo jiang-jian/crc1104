@@ -24,5 +24,8 @@ class MainActivity : FlutterActivity() {
         
         // 注册 External Printer Plugin（外接USB打印机）
         flutterEngine.plugins.add(ExternalPrinterPlugin())
+        
+        // 注册 External Card Reader Plugin（外接USB读卡器）
+        flutterEngine.plugins.add(ExternalCardReaderPlugin())
     }
 }
