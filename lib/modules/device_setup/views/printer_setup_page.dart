@@ -7,14 +7,11 @@ import '../widgets/printer_setup_layout.dart';
 import '../widgets/printer_status_display.dart';
 import '../widgets/printer_instructions_panel.dart';
 import '../widgets/printer_action_buttons.dart';
-import '../widgets/external_printer_panel.dart';
 import '../widgets/draggable_log_panel.dart';
 
-/// 打印机设置页面 - 全新3列布局 + 可拖动日志
-/// 第1列（左）：操作提示
-/// 第2列（中）：内置打印机（明确标识）
-/// 第3列（右）：外置打印机（明确标识）
-/// 悬浮层：可拖动的SDK调试日志面板
+/// 打印机设置页面 - 内置打印机配置
+/// 只保留内置打印机配置功能
+/// 外置打印机已迁移至【设置】模块
 class PrinterSetupPage extends GetView<DeviceSetupController> {
   const PrinterSetupPage({super.key});
 
@@ -36,31 +33,28 @@ class PrinterSetupPage extends GetView<DeviceSetupController> {
     );
   }
 
-  /// 主内容区域 - 3列布局（日志面板默认隐藏，不占用空间）
+  /// 主内容区域 - 2列布局（操作提示 + 内置打印机）
   Widget _buildMainContent() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // 第1列：操作提示（20%宽度）
+        // 第1列：操作提示（30%宽度）
         Expanded(
-          flex: 20,
+          flex: 30,
           child: _buildInstructionsPanel(),
         ),
         
         SizedBox(width: 20.w),
         
-        // 第2列：内置打印机（40%宽度）
+        // 第2列：内置打印机（70%宽度，居中显示）
         Expanded(
-          flex: 40,
-          child: _buildBuiltInPrinterPanel(),
-        ),
-        
-        SizedBox(width: 20.w),
-        
-        // 第3列：外置打印机（40%宽度）
-        Expanded(
-          flex: 40,
-          child: _buildExternalPrinterPanelNew(),
+          flex: 70,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 600.w),
+              child: _buildBuiltInPrinterPanel(),
+            ),
+          ),
         ),
       ],
     );
@@ -168,82 +162,9 @@ class PrinterSetupPage extends GetView<DeviceSetupController> {
     );
   }
 
-  /// 第3列：外置打印机面板（带标题，完整显示）
-  Widget _buildExternalPrinterPanelNew() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: const Color(0xFF9C27B0), width: 2.w),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF9C27B0).withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 标题栏
-          Container(
-            padding: EdgeInsets.all(20.w),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF3E5F5),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(14.r),
-                topRight: Radius.circular(14.r),
-              ),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(12.w),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF9C27B0),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Icon(
-                    Icons.usb,
-                    size: 28.sp,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(width: 16.w),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '外置打印机',
-                      style: TextStyle(
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF9C27B0),
-                      ),
-                    ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      'USB外接打印机设备',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: const Color(0xFF666666),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          
-          // 内容区域 - 外接打印机面板（使用Flexible自适应）
-          const Flexible(
-            child: ExternalPrinterPanel(),
-          ),
-        ],
-      ),
-    );
-  }
+
+
+
 
   /// 识别状态（测试成功后显示）
   Widget _buildRecognitionStatus() {

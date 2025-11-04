@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
 class SettingsController extends GetxController {
-  final selectedMenu = RxString('version_check');
+  final selectedMenu = RxString('external_card_reader');
   final deviceId = RxString('');
   final versionInfo = RxString('');
   final updateTime = RxString('');

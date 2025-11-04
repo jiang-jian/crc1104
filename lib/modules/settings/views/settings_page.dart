@@ -6,6 +6,12 @@ import '../controllers/settings_controller.dart';
 import 'version_check_view.dart';
 import 'change_password_view.dart';
 import 'placeholder_view.dart';
+import 'external_card_reader_view.dart';
+import 'external_printer_view.dart';
+import 'qr_scanner_config_view.dart';
+import 'network_detection_view.dart';
+import 'card_registration_view.dart';
+import 'game_card_management_view.dart';
 
 class SettingsPage extends GetView<SettingsController> {
   const SettingsPage({super.key});
@@ -38,14 +44,14 @@ class SettingsPage extends GetView<SettingsController> {
 
   Widget _buildSidebar() {
     final menuItems = [
+      ('external_card_reader', '读卡器', Icons.nfc),
       ('qr_scanner', '二维码扫描仪', Icons.qr_code_2),
-      ('printer', '打印机', Icons.print),
-      ('network_check', '网络检查', Icons.wifi),
+      ('external_printer', '打印机', Icons.print),
+      ('network_detection', '网络检测', Icons.network_check),
       ('receipt_settings', '小票设置', Icons.receipt),
-      ('card_level', '卡片等级', Icons.card_membership),
-      ('game_management', '游戏管理', Icons.games),
+      ('card_registration', '卡片登记', Icons.card_membership),
+      ('game_card_management', '游戏卡管理', Icons.games),
       ('change_password', '修改登录密码', Icons.lock),
-      ('version_check', '版本检查', Icons.info),
     ];
 
     return Container(
@@ -105,6 +111,24 @@ class SettingsPage extends GetView<SettingsController> {
   Widget _buildContent(String selectedMenu) {
     Widget content;
     switch (selectedMenu) {
+      case 'external_card_reader':
+        content = const ExternalCardReaderView();
+        break;
+      case 'qr_scanner':
+        content = const QrScannerConfigView();
+        break;
+      case 'external_printer':
+        content = const ExternalPrinterView();
+        break;
+      case 'network_detection':
+        content = const NetworkDetectionView();
+        break;
+      case 'card_registration':
+        content = const CardRegistrationView();
+        break;
+      case 'game_card_management':
+        content = const GameCardManagementView();
+        break;
       case 'network_check':
         content = const NetworkCheckWidget();
         break;
