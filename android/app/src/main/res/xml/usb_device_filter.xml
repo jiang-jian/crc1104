@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- USB打印机设备过滤器 -->
+    <!-- USB设备类7表示打印机 -->
+    <usb-device class="7" />
+</resources>
+
