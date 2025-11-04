@@ -323,8 +323,8 @@ class DeviceSetupController extends GetxController {
 
   /// 完成设置
   void completeSetup() {
-    // 保存设备初始化完成状态
-    Get.snackbar('成功', '设备初始化完成');
+    // 切换到完成页面
+    currentStep.value = DeviceSetupStep.completed;
   }
 
   /// 跳过当前步骤

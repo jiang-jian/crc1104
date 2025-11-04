@@ -36,19 +36,19 @@ class PrinterSetupPage extends GetView<DeviceSetupController> {
   /// 主内容区域 - 2列布局（操作提示 + 内置打印机）
   Widget _buildMainContent() {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 第1列：操作提示（30%宽度）
+        // 第1列：操作提示（20%宽度，紧凑显示）
         Expanded(
-          flex: 30,
+          flex: 20,
           child: _buildInstructionsPanel(),
         ),
         
-        SizedBox(width: 20.w),
+        SizedBox(width: 32.w),
         
-        // 第2列：内置打印机（70%宽度，居中显示）
+        // 第2列：内置打印机（80%宽度，居中显示）
         Expanded(
-          flex: 70,
+          flex: 80,
           child: Center(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 600.w),
@@ -65,100 +65,26 @@ class PrinterSetupPage extends GetView<DeviceSetupController> {
     return const PrinterInstructionsPanel();
   }
 
-  /// 第2列：内置打印机面板（带标题）
+  /// 第2列：内置打印机面板（无边框，居中布局）
   Widget _buildBuiltInPrinterPanel() {
     final printerService = Get.find<SunmiPrinterService>();
     final checkStatus = controller.printerCheckStatus.value;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: const Color(0xFF52C41A), width: 2.w),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF52C41A).withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 标题栏
-          Container(
-            padding: EdgeInsets.all(20.w),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF6FFED),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(14.r),
-                topRight: Radius.circular(14.r),
-              ),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(12.w),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF52C41A),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Icon(
-                    Icons.print,
-                    size: 28.sp,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(width: 16.w),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '内置打印机',
-                      style: TextStyle(
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF52C41A),
-                      ),
-                    ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      'Sunmi内置热敏打印机',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: const Color(0xFF666666),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          
-          // 内容区域（使用Flexible自适应）
-          Flexible(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(20.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 打印机状态显示
-                  PrinterStatusDisplay(
-                    statusInfo: printerService.printerStatus.value,
-                    isChecking: checkStatus == 'checking',
-                  ),
-                  
-                  SizedBox(height: 20.h),
-                  
-                  // 操作按钮
-                  const PrinterActionButtons(),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // 打印机状态显示
+        PrinterStatusDisplay(
+          statusInfo: printerService.printerStatus.value,
+          isChecking: checkStatus == 'checking',
+        ),
+        
+        SizedBox(height: 24.h),
+        
+        // 操作按钮
+        const PrinterActionButtons(),
+      ],
     );
   }
 

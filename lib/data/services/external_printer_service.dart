@@ -25,6 +25,9 @@ class ExternalPrinterService extends GetxService {
   // 是否正在打印
   final isPrinting = false.obs;
 
+  // 测试打印是否成功
+  final testPrintSuccess = false.obs;
+
   // 调试日志
   final debugLogs = <String>[].obs;
 
@@ -78,6 +81,7 @@ class ExternalPrinterService extends GetxService {
   Future<void> scanUsbPrinters() async {
     _addLog('========== 开始扫描USB打印机 ==========');
     isScanning.value = true;
+    testPrintSuccess.value = false; // 重置测试状态
 
     try {
       if (kIsWeb) {
